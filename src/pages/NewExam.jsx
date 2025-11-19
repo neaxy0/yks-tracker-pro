@@ -8,7 +8,6 @@ import { ChevronDown, ChevronUp, Save } from 'lucide-react';
 const SubjectInput = ({ subject, parentId = null, onChange, values }) => {
     const [isOpen, setIsOpen] = useState(true);
 
-    // Unique ID for form state: parentId.subjectId or subjectId
     const uniqueId = parentId ? `${parentId}.${subject.id}` : subject.id;
     const currentVal = values[uniqueId] || { correct: '', wrong: '' };
     const net = calculateNet(currentVal.correct, currentVal.wrong);
@@ -75,7 +74,6 @@ const SubjectInput = ({ subject, parentId = null, onChange, values }) => {
 const NewExam = ({ onSave }) => {
     const [examType, setExamType] = useState(EXAM_TYPES.TYT);
     const [examName, setExamName] = useState('');
-    // Separate state for each exam type to prevent overlap
     const [results, setResults] = useState({
         [EXAM_TYPES.TYT]: {},
         [EXAM_TYPES.AYT]: {}
@@ -105,14 +103,14 @@ const NewExam = ({ onSave }) => {
             date: new Date().toISOString(),
             name: examName,
             type: examType,
-            results: results[examType] // Only save the active exam type's results
+            results: results[examType]
         };
 
         onSave(examData);
     };
 
     return (
-        <div className="pb-24 px-4 pt-6 max-w-md mx-auto">
+        <div className="pb-24 px-4 pt-[max(3rem,env(safe-area-inset-top))] max-w-md mx-auto">
             <h1 className="text-3xl font-bold mb-6 bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
                 Yeni Deneme
             </h1>

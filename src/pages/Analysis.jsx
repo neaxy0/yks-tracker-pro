@@ -155,7 +155,7 @@ const Analysis = ({ exams }) => {
     };
 
     return (
-        <div className="pb-24 px-4 pt-6 max-w-md mx-auto h-screen flex flex-col">
+        <div className="pb-24 px-4 pt-[max(3rem,env(safe-area-inset-top))] max-w-md mx-auto h-screen flex flex-col">
             <h1 className="text-3xl font-bold mb-6 bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
                 Analiz
             </h1>

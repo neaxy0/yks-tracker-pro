@@ -83,7 +83,7 @@ const History = ({ exams }) => {
     const sortedExams = [...filteredExams].sort((a, b) => new Date(b.date) - new Date(a.date));
 
     return (
-        <div className="pb-24 px-4 pt-6 max-w-md mx-auto min-h-screen">
+        <div className="pb-24 px-4 pt-[max(3rem,env(safe-area-inset-top))] max-w-md mx-auto min-h-screen">
             <div className="flex items-center justify-between mb-6">
                 <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
                     Geçmiş

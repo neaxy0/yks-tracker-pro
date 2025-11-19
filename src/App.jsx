@@ -22,6 +22,11 @@ function App() {
         setActiveTab('dashboard');
     };
 
+    const handleDeleteExam = (examId) => {
+        const updatedExams = exams.filter(exam => exam.id !== examId);
+        setExams(updatedExams);
+    };
+
     const renderPage = () => {
         switch (activeTab) {
             case 'dashboard':
@@ -29,7 +34,7 @@ function App() {
             case 'new':
                 return <NewExam onSave={handleSaveExam} />;
             case 'history':
-                return <History exams={exams} />;
+                return <History exams={exams} onDelete={handleDeleteExam} />;
             case 'analysis':
                 return <Analysis exams={exams} />;
             default:

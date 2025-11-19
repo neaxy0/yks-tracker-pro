@@ -2,7 +2,75 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatDate, calculateTotalNet, calculateNet } from '../utils/helpers';
 import { Card } from '../components/ui';
-import { ChevronRight, Calendar as CalendarIcon, List } from 'lucide-react';
+import { ChevronRight, Calendar as CalendarIcon, List, Trash2 } from 'lucide-react';
+
+const SwipeableExamCard = ({ exam, index, onDelete, onClick }) => {
+    const [dragX, setDragX] = useState(0);
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    const handleDragEnd = (event, info) => {
+        if (info.offset.x > 100) {
+            setIsDeleting(true);
+            setTimeout(() => onDelete(exam.id), 300);
+        } else {
+            setDragX(0);
+        }
+    };
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{
+                opacity: isDeleting ? 0 : 1,
+                x: isDeleting ? 300 : 0,
+                height: isDeleting ? 0 : 'auto'
+            }}
+            transition={{ delay: isDeleting ? 0 : index * 0.05 }}
+            className="relative overflow-hidden mb-4"
+        >
+            {/* Red delete background */}
+            <div className="absolute inset-0 bg-red-500/20 border border-red-500/30 rounded-2xl flex items-center justify-end px-6">
+                <Trash2 className="text-red-400" size={24} />
+            </div>
+
+            {/* Swipeable card */}
+            <motion.div
+                drag="x"
+                dragConstraints={{ left: 0, right: 200 }}
+                dragElastic={0.1}
+                onDrag={(e, info) => setDragX(info.offset.x)}
+                onDragEnd={handleDragEnd}
+                style={{ x: dragX }}
+            >
+                <Card
+                    className="cursor-pointer hover:bg-white/5 transition-all group"
+                    onClick={onClick}
+                >
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <div className="flex items-center gap-2 mb-1">
+                                <span className={`text-xs font-bold px-2 py-0.5 rounded ${exam.type === 'TYT' ? 'bg-blue-500/20 text-blue-400' : 'bg-purple-500/20 text-purple-400'}`}>
+                                    {exam.type}
+                                </span>
+                                <span className="text-xs text-slate-500">{formatDate(exam.date)}</span>
+                            </div>
+                            <h3 className="font-semibold text-white text-lg">{exam.name}</h3>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <div className="text-right">
+                                <div className="text-2xl font-bold text-primary-400">
+                                    {calculateTotalNet(exam)}
+                                </div>
+                                <div className="text-xs text-slate-500">Toplam Net</div>
+                            </div>
+                            <ChevronRight className="text-slate-600 group-hover:text-white transition-colors" />
+                        </div>
+                    </div>
+                </Card>
+            </motion.div>
+        </motion.div>
+    );
+};
 
 const CalendarView = ({ exams, onSelectDate }) => {
     const today = new Date();
@@ -71,7 +139,7 @@ const CalendarView = ({ exams, onSelectDate }) => {
     );
 };
 
-const History = ({ exams }) => {
+const History = ({ exams, onDelete }) => {
     const [view, setView] = useState('list');
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedExam, setSelectedExam] = useState(null);
@@ -128,38 +196,13 @@ const History = ({ exams }) => {
                     </div>
                 ) : (
                     sortedExams.map((exam, index) => (
-                        <motion.div
+                        <SwipeableExamCard
                             key={exam.id}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: index * 0.05 }}
-                        >
-                            <Card
-                                className="cursor-pointer hover:bg-white/5 transition-all group"
-                                onClick={() => setSelectedExam(exam)}
-                            >
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <span className={`text-xs font-bold px-2 py-0.5 rounded ${exam.type === 'TYT' ? 'bg-blue-500/20 text-blue-400' : 'bg-purple-500/20 text-purple-400'}`}>
-                                                {exam.type}
-                                            </span>
-                                            <span className="text-xs text-slate-500">{formatDate(exam.date)}</span>
-                                        </div>
-                                        <h3 className="font-semibold text-white text-lg">{exam.name}</h3>
-                                    </div>
-                                    <div className="flex items-center gap-4">
-                                        <div className="text-right">
-                                            <div className="text-2xl font-bold text-primary-400">
-                                                {calculateTotalNet(exam)}
-                                            </div>
-                                            <div className="text-xs text-slate-500">Toplam Net</div>
-                                        </div>
-                                        <ChevronRight className="text-slate-600 group-hover:text-white transition-colors" />
-                                    </div>
-                                </div>
-                            </Card>
-                        </motion.div>
+                            exam={exam}
+                            index={index}
+                            onDelete={onDelete}
+                            onClick={() => setSelectedExam(exam)}
+                        />
                     ))
                 )}
             </div>

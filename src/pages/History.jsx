@@ -5,15 +5,13 @@ import { Card } from '../components/ui';
 import { ChevronRight, Calendar as CalendarIcon, List, Trash2 } from 'lucide-react';
 
 const SwipeableExamCard = ({ exam, index, onDelete, onClick }) => {
-    const [dragX, setDragX] = useState(0);
+    const [isRevealed, setIsRevealed] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
-    const handleDragEnd = (event, info) => {
-        if (info.offset.x > 100) {
+    const handleDelete = () => {
+        if (window.confirm(`"${exam.name}" denemesini silmek istediğinize emin misiniz?`)) {
             setIsDeleting(true);
             setTimeout(() => onDelete(exam.id), 300);
-        } else {
-            setDragX(0);
         }
     };
 
@@ -22,25 +20,38 @@ const SwipeableExamCard = ({ exam, index, onDelete, onClick }) => {
             initial={{ opacity: 0, x: -20 }}
             animate={{
                 opacity: isDeleting ? 0 : 1,
-                x: isDeleting ? 300 : 0,
+                x: isDeleting ? -300 : 0,
                 height: isDeleting ? 0 : 'auto'
             }}
             transition={{ delay: isDeleting ? 0 : index * 0.05 }}
-            className="relative overflow-hidden mb-4"
+            className="relative mb-4"
         >
-            {/* Red delete background */}
-            <div className="absolute inset-0 bg-red-500/20 border border-red-500/30 rounded-2xl flex items-center justify-end px-6">
-                <Trash2 className="text-red-400" size={24} />
+            {/* Delete button behind */}
+            <div className="absolute right-0 top-0 bottom-0 w-20 flex items-center justify-center">
+                <motion.button
+                    initial={{ scale: 0 }}
+                    animate={{ scale: isRevealed ? 1 : 0 }}
+                    onClick={handleDelete}
+                    className="bg-red-500 text-white rounded-xl w-16 h-16 flex items-center justify-center shadow-lg"
+                >
+                    <Trash2 size={24} />
+                </motion.button>
             </div>
 
             {/* Swipeable card */}
             <motion.div
                 drag="x"
-                dragConstraints={{ left: 0, right: 200 }}
+                dragConstraints={{ left: -80, right: 0 }}
                 dragElastic={0.1}
-                onDrag={(e, info) => setDragX(info.offset.x)}
-                onDragEnd={handleDragEnd}
-                style={{ x: dragX }}
+                onDragEnd={(e, info) => {
+                    if (info.offset.x < -40) {
+                        setIsRevealed(true);
+                    } else {
+                        setIsRevealed(false);
+                    }
+                }}
+                animate={{ x: isRevealed ? -80 : 0 }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
             >
                 <Card
                     className="cursor-pointer hover:bg-white/5 transition-all group"

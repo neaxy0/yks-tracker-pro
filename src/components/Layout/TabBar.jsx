@@ -11,7 +11,7 @@ const TabBar = ({ activeTab, setActiveTab }) => {
     ];
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] z-50 pointer-events-none flex justify-center">
+        <div className="fixed bottom-0 left-0 right-0 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] z-50 pointer-events-none flex justify-center backdrop-blur-xl bg-dark-bg/30">
             <div className="glass rounded-full px-6 py-3 flex items-center gap-8 pointer-events-auto shadow-2xl shadow-black/50">
                 {tabs.map((tab) => {
                     const isActive = activeTab === tab.id;

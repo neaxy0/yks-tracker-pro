@@ -88,7 +88,7 @@ const Dashboard = ({ exams }) => {
     };
 
     return (
-        <div className="pb-24 px-4 pt-[max(3rem,env(safe-area-inset-top))] max-w-md mx-auto min-h-screen">
+        <div className="pb-24 px-4 pt-[max(4rem,env(safe-area-inset-top))] max-w-md mx-auto min-h-screen">
             <header className="mb-8">
                 <h1 className="text-3xl font-bold text-white mb-1">Hoş Geldin 👋</h1>
                 <p className="text-slate-400">İşte son durumun ve analizlerin.</p>
